@@ -1,0 +1,107 @@
+{% load static %}
+
+{% block body %}
+
+{% include 'navigation.html' %}
+
+<marquee style="font-family: 'Monotype-Corsiva'; font-size: 40px; color: white; background-color: black; font-weight: bold; margin-top: 1%">
+    Home page
+</marquee>
+
+<style>
+    .container {
+        max-width: 90%;
+    }
+
+    .content {
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+
+    .student-image {
+        width: 100%;
+        margin-top: 5%;
+        height: 250px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        padding: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="container-fluid" style="margin-top: 1%">
+    <img src="{% static 'images/d1.jpg' %}" style="height: 500px; width:100%; object-fit: cover; border-radius: 20px;">
+</div>
+
+<div class="container" style="background-color: black; margin-top: 2%">
+    <h1 class="text-center text-white">------| OUR PLACED STUDENTS |------</h1>
+
+    <div class="row mt-3">
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f2.jpg' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>Facebook</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f4.jpg' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>Google</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f7.jpg' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>Amazon</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f5.jpg' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>Microsoft</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f10.avif' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>HCL</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f01.jpg' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>Infosys</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f45.webp' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>Netflix</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 position-relative">
+            <img src="{% static 'images/f33.jpg' %}" class="student-image">
+            <div class="content" style="height: 30px; width: 91%">
+                <p>Apple</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'footer.html' %}
+
+{% endblock %}
