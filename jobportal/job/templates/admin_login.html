@@ -51,4 +51,15 @@
 
 {%include "footer.html "%}
 
+
+{% if error == "not_admin" %}
+<script>
+    alert("Access denied. You do not have admin privileges.");
+</script>
+{% elif error == "invalid_credentials" %}
+<script>
+    alert("Invalid username or password. Please try again.");
+</script>
+{% endif %}
+
 {% endblock %}

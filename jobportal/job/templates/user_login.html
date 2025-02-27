@@ -53,19 +53,28 @@
 {% include "footer.html" %}
 
 
-
-{% comment %} 
-{% if success_message %}
-            alert("{{ success_message }}");
-            setTimeout(function(){window.location.href = "/user_home/"; }, 1000); 
-        {% endif %} {% endcomment %}
-
-{% if error %}
-    <script>
-        alert("{% if error == 'invalid_credentials' %}Invalid Username or Password{% elif error == 'not_student' %}You are not a student!{% elif error == 'no_student_user' %}Student user not found!{% elif error == 'no' %} Login Successfully!{% endif %}");
-    </script>
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endfor %}
 {% endif %}
 
+{% if error == "not_student" %}
+<script>
+    alert("Access denied. You are not a student.");
+</script>
+{% elif error == "no_student_user" %}
+<script>
+    alert("No student record found for this user.");
+</script>
+{% elif error == "invalid_credentials" %}
+<script>
+    alert("Invalid username or password. Please try again.");
+</script>
+{% endif %}
 
+  
 
 {% endblock %}

@@ -13,8 +13,9 @@
 
 <!-- Recruiter Login Form -->
 <div class="container mt-5">
-    <form method="POST" class="shadow p-4 rounded" style="background-color: #f2f2f2; max-width: 500px; margin: 0 auto;">
+    <form method="POST" action="{% url 'recruiter_login' %}" class="shadow p-4 rounded" style="background-color: #f2f2f2; max-width: 500px; margin: 0 auto;">
         {% csrf_token %}
+    
         
         <h3 class="text-center mb-4" style="font-family: 'Dancing Script', cursive; color: maroon;">Recruiter Login</h3>
         
@@ -42,13 +43,40 @@
         
          <!-- Sign Up Button below the Login button -->
          <div class="form-group text-center mt-3">
-            <a href="{% url 'signup' %}" class="btn btn-primary btn-block" style="font-size: 18px; padding: 15px; transition: background-color 0.3s;" onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
+            <a href="{% url 'recruiter_signup' %}" class="btn btn-primary btn-block" style="font-size: 18px; padding: 15px; transition: background-color 0.3s;" onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
                 Sign Up
             </a>
         </div>
+
+       
+
     </form>
 </div>
 
-{%include "footer.html "%}
+{% include "footer.html "%}
+
+
+
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endfor %}
+{% endif %}
+
+{% if error == "not_recruiter" %}
+<script>
+    alert("Your account is not verified! please Wait....");
+</script>
+{% elif error == "no_recruiter" %}
+<script>
+    alert("Access denied. You are not a Recruiter.");
+</script>
+{% elif error == "invalid_credentials" %}
+<script>
+    alert("Invalid username or password. Please try again.");
+</script>
+{% endif %}
 
 {% endblock %}
