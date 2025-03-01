@@ -8,7 +8,7 @@ class StudentUser(models.Model):
     image = models.FileField(null=True, blank=True)
     gender = models.CharField(max_length=10, null=True, blank=True)
     Type = models.CharField(max_length=15,default="student")
-    
+    email = models.CharField(max_length=30 , null=True, blank=True)
     
     def __str__(self):
         return self.user.username
@@ -23,6 +23,6 @@ class Recruiter(models.Model):
     gender = models.CharField(max_length=10, null=True, blank=True)
     Type = models.CharField(max_length=15,default="Recruiter")
     status = models.CharField(max_length=15,null=True)
-    
+    email = models.CharField(max_length=30 , null=True, blank=True)
     def __str__(self):
         return self.user.username

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from .models import StudentUser , Recruiter
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -8,6 +8,8 @@ from django.core.files.base import ContentFile
 from django.utils.crypto import get_random_string
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.contrib import messages
+
 
 def index(request):
     return render(request, 'index.html')
@@ -31,6 +33,71 @@ def views_user(request):
     data = StudentUser.objects.all()
     d = {'data': data}
     return render(request, 'views_user.html',d)
+
+
+
+def change_status(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+
+    # Cleaner way to get object or show 404 error
+    recruiter = get_object_or_404(Recruiter, id=pid)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        if status:
+            recruiter.status = status
+            recruiter.save()
+            messages.success(request, "Recruiter status updated successfully!")
+            return redirect('recruiter_pending')
+
+    return render(request, 'change_status.html', {'recruiter': recruiter})
+
+
+def recruiter_pending(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    
+    data = Recruiter.objects.filter(status = "pending")
+    d = {'data': data}
+    print(d)
+    return render(request, 'recruiter_pending.html',d)
+
+
+def recruiter_accepted(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    
+    data = Recruiter.objects.filter(status = "Active")
+    d = {'data': data}
+    print(d)
+    return render(request, 'recruiter_accepted.html',d)
+
+
+def recruiter_rejected(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    
+    data = Recruiter.objects.filter(status = "Reject")
+    d = {'data': data}
+    print(d)
+    return render(request, 'recruiter_rejected.html',d)
+
+def all_recruiter(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    
+    data = Recruiter.objects.all()
+    d = {'data': data}
+    print(d)
+    return render(request, 'all_recruiter.html',d)
+def delete_user(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    
+    student = StudentUser.objects.get(id = pid )
+    student.delete()
+    return redirect('views_user')
 
 def admin_login(request):
     error = ""
@@ -70,6 +137,7 @@ def User_signup(request):
         P = request.POST['Pwd']
         G = request.POST['Gender']
         img = request.FILES['Image']
+        
         print("Form Data:", f, L, E, C, P, G, img)
 
         try:
@@ -80,7 +148,7 @@ def User_signup(request):
 
             user = User.objects.create_user(first_name=f, username=E, password=P, last_name=L)
             
-            StudentUser.objects.create(user=user, mobile=C, image=img, gender=G, Type= "student", name = f)
+            StudentUser.objects.create(user=user, mobile=C, image=img, gender=G, Type= "student", name = f , email = E)
 
             error = "no"  
             success_message = "Signup successful! You will be redirected to the login page shortly."
@@ -202,7 +270,7 @@ def recruiter_signup(request):
             
             filename = get_random_string(length=32)
             default_storage.save(f'{filename}.jpg', ContentFile(img.read()))
-            Recruiter.objects.create(user=user, mobile=C, image=f'{filename}.jpg', gender=G, Type= "Recruiter", company= company , name = f , status = "pending")
+            Recruiter.objects.create(user=user, mobile=C, image=f'{filename}.jpg', gender=G, Type= "Recruiter", company= company , name = f , status = "pending" , email = E)
 
             error = "no"  
             success_message = "Signup successful! You will be redirected to the login page shortly."

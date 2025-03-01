@@ -54,7 +54,7 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center bg-dark text-white">
-            <h4>All Student Users</h4>
+            <h4>Rejected Recruiters</h4>
         </div>
         <div class="card-body">
             <table class="table table-striped table-hover table-bordered table-responsive" id="example">
@@ -65,7 +65,9 @@
                         <th>Email ID</th>
                         <th>Contact</th>
                         <th>Gender</th>
+                        <th>Company</th>
                         <th>Image</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -77,8 +79,14 @@
                         <td>{{ i.email }}</td>
                         <td>{{ i.mobile }}</td>
                         <td>{{ i.gender }}</td>
+                        <td>{{ i.company }}</td>
                         <td><img src="{{ i.image.url }}" class="img-fluid rounded-circle" alt="User Image"></td>
-                        <td><a href = "{% url 'delete_user' i.id %}"button class="btn btn-danger btn-sm" onclick = "return confirm('Are You Sure?..')">Delete</button></td>
+                        <td>{{ i.status }}</td>
+                        <td>
+                            <a href="{% url 'change_status' i.id %}?name={{ i.name }}" class="btn btn-primary btn-sm">
+                                Change Status
+                            </a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

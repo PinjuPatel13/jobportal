@@ -27,14 +27,23 @@ urlpatterns = [
     path('admin_home/',admin_home, name="admin_home"),
     path('user_login/',user_login, name="user_login"),
     path('views_user/',views_user, name="views_user"),
+    path('recruiter_pending/',recruiter_pending, name="recruiter_pending"),
+    path('change_status/<int:pid>',change_status, name="change_status"),
+    path('delete_user/<int:pid>',delete_user, name="delete_user"),
     path('recruiter_login/', recruiter_login, name="recruiter_login"),
+    path('recruiter_accepted/', recruiter_accepted, name="recruiter_accepted"),
+    path('recruiter_rejected/', recruiter_rejected, name="recruiter_rejected"),
+    path('all_recruiter/', all_recruiter, name="all_recruiter"),
+
+    
     path('User_signup/', User_signup, name='signup'),
     path('recruiter_signup/', recruiter_signup, name='recruiter_signup'),
     path('user_home/', user_home, name='user_home'),
-     path('recruiter_home/', recruiter_home, name='recruiter_home'),
+    path('recruiter_home/', recruiter_home, name='recruiter_home'),
     path('logout/', Logout, name='logout'),
     path('test-session/', test_session,name = "test_session"),
 
 
     
 ]+ static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
+
