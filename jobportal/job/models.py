@@ -26,3 +26,22 @@ class Recruiter(models.Model):
     email = models.CharField(max_length=30 , null=True, blank=True)
     def __str__(self):
         return self.user.username
+
+
+
+class Job(models.Model):
+    recruiter = models.ForeignKey(Recruiter,on_delete=models.CASCADE)
+    start_data = models.DateField()
+    End_data = models.DateField()
+    job_title = models.CharField(max_length=100)
+    job_salary = models.FloatField(max_length=20)
+    Image = models.FileField(max_length=100)
+    job_description = models.TextField(max_length=300)
+    job_location = models.CharField(max_length=100)
+    job_experience = models.CharField(max_length=100)
+    Skills = models.CharField(max_length=100)
+    Creationdata = models.DateField()
+    
+    
+    def __str__(self):
+        return self.job_title

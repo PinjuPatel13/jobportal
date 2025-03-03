@@ -83,10 +83,10 @@
                         <td><img src="{{ i.image.url }}" class="img-fluid rounded-circle" alt="User Image"></td>
                         <td>{{ i.status }}</td>
                         <td>
-                            <a href="{% url 'change_status' i.id %}?name={{ i.name }}" class="btn btn-primary btn-sm">
-                                Change Status
-                            </a>
+                            <a href="{% url 'change_status' i.id %}?name={{ i.name }}" class="btn btn-primary btn-sm">Change Status</a>
+                            <a href = "{% url 'delete_recruiter' i.user.id %}"button class="btn btn-danger btn-sm" onclick = "return confirm('Are You Sure?..')">Delete</button>
                         </td>
+                        
                     </tr>
                     {% endfor %}
                 </tbody>

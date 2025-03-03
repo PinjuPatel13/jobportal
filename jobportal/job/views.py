@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from .models import StudentUser , Recruiter
+from .models import StudentUser , Recruiter , Job
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
@@ -9,6 +9,9 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from datetime import date
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def index(request):
@@ -54,9 +57,234 @@ def change_status(request, pid):
     return render(request, 'change_status.html', {'recruiter': recruiter})
 
 
+def change_passwordadmin(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')  
+
+    error = ""
+    success_message = ""
+    
+    if request.method == 'POST':
+        old_password = request.POST['oldpassword']
+        new_password = request.POST['newpassword']
+        confirm_password = request.POST['confirmpassword']
+
+        # Ensure that the new password and confirm password match
+        if new_password != confirm_password:
+            error = "New Password and Confirm Password should match!"
+        else:
+            try:
+                # Check the current password and update if correct
+                user = User.objects.get(id=request.user.id)
+                
+                # Verify if the old password is correct
+                if user.check_password(old_password):
+                    user.set_password(new_password)
+                    user.save()
+                    success_message = "Password changed successfully!"
+                    return redirect('admin_login')
+                    # Update the session to reflect the new password
+                    update_session_auth_hash(request, user)
+
+                else:
+                    error = "Incorrect current password"
+
+            except User.DoesNotExist:
+                error = "User does not exist"
+
+    return render(request, 'change_passwordadmin.html', {'error': error, 'success_message': success_message})
+
+
+def change_passwordrecruiter(request):  
+
+    error = ""
+    success_message = ""
+    
+    if request.method == 'POST':
+        old_password = request.POST['oldpassword']
+        new_password = request.POST['newpassword']
+        confirm_password = request.POST['confirmpassword']
+
+        # Ensure that the new password and confirm password match
+        if new_password != confirm_password:
+            error = "New Password and Confirm Password should match!"
+        else:
+            try:
+                # Check the current password and update if correct
+                user = User.objects.get(id=request.user.id)
+                
+                # Verify if the old password is correct
+                if user.check_password(old_password):
+                    user.set_password(new_password)
+                    user.save()
+                    success_message = "Password changed successfully!"
+                    return redirect('recruiter_login')
+                    # Update the session to reflect the new password
+                    update_session_auth_hash(request, user)
+
+                else:
+                    error = "Incorrect current password"
+
+            except User.DoesNotExist:
+                error = "User does not exist"
+
+    return render(request, 'change_passwordrecruiter.html', {'error': error, 'success_message': success_message})
+
+
+def change_passworduser(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')  
+
+    error = ""
+    success_message = ""
+    
+    if request.method == 'POST':
+        old_password = request.POST['oldpassword']
+        new_password = request.POST['newpassword']
+        confirm_password = request.POST['confirmpassword']
+
+        # Ensure that the new password and confirm password match
+        if new_password != confirm_password:
+            error = "New Password and Confirm Password should match!"
+        else:
+            try:
+                # Check the current password and update if correct
+                user = User.objects.get(id=request.user.id)
+                
+                # Verify if the old password is correct
+                if user.check_password(old_password):
+                    user.set_password(new_password)
+                    user.save()
+                    success_message = "Password changed successfully!"
+                    return redirect('user_login')
+                    
+                    # Update the session to reflect the new password
+                    update_session_auth_hash(request, user)
+
+                else:
+                    error = "Incorrect current password"
+
+            except User.DoesNotExist:
+                error = "User does not exist"
+
+    return render(request, 'change_passworduser.html', {'error': error, 'success_message': success_message})
+
+def add_job(request):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')
+    error = ""
+    if request.method == "POST":
+        jt = request.POST['jobtitle']
+        sd = request.POST['startdate']
+        ed = request.POST['enddate']
+        sy = request.POST['Salary']
+        lgo = request.FILES.get('image')  # Use .get() to avoid KeyError
+        ex = request.POST['Expriance']  # Fix spelling in HTML form too
+        loc = request.POST['location']
+        sk = request.POST['Skills']
+        des = request.POST['Description']
+
+        print("Form Data:", jt, sd, ed, sy, lgo, ex, loc, sk, des)
+        user = request.user
+        recruiter = Recruiter.objects.get(user=user)
+
+        try:
+            Job.objects.create(
+                recruiter=recruiter,
+                start_date=sd,  # Fixed field name
+                End_data=ed,  # Fixed field name
+                job_title=jt,
+                job_salary=sy,
+                Image=lgo,  # Assuming 'image' is the field name in the model
+                job_description=des,
+                job_location=loc,
+                job_experience=ex,  # Check if field matches your model
+                Skills=sk,  # Assuming lowercase 'skills' is in the model
+                Creationdata=date.today()  # Fixed field name
+            )
+            error = "No"
+        except Exception as e:
+            print(e)
+            error = "Yes"
+    return render(request, 'add_job.html', {'error': error})
+
+
+
+def edit_jobdetails(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')
+    error = ""
+    job = Job.objects.get(id=pid)
+    
+    if request.method == "POST":
+        try:
+            jt = request.POST['jobtitle']
+            sd = request.POST['startdate']
+            ed = request.POST['enddate']
+            sy = request.POST['Salary']
+            ex = request.POST['Experience']
+            loc = request.POST['location']
+            sk = request.POST['Skills']
+            des = request.POST['Description']
+
+            # Update job fields
+            job.job_title = jt
+            job.job_salary = sy
+            job.job_description = des
+            job.job_location = loc
+            job.job_experience = ex
+            job.Skills = sk
+
+            # Only update image if a new one was uploaded
+            if 'image' in request.FILES:
+                job.Image = request.FILES['image']
+
+            # Update start date if provided
+            if sd:
+                job.start_data = sd
+
+            # Update end date if provided
+            if ed:
+                job.End_data = ed
+
+            job.save()
+            error = "No"
+        except Exception as e:
+            print(e)  # Useful for debugging
+            error = "Yes"
+
+    d = {'error': error, 'job': job}
+    return render(request, 'edit_jobdetails.html', d)
+
+
+def job_list(request):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')
+
+    try:
+        user = request.user
+        recruiter = Recruiter.objects.get(user=user)
+        
+        # Fetch jobs related to the recruiter with optimized query
+        job = Job.objects.filter(recruiter=recruiter).select_related('recruiter')
+        
+        context = {'job': job}
+        return render(request, 'job_list.html', context)
+
+    except ObjectDoesNotExist:
+        # Handle the case when a recruiter is not found for the user
+        return redirect('recruiter_login')  # or a custom error page
+    
+    except Exception as e:
+        # Log the error and show a generic error message
+        print(f"Error: {e}")
+        return render(request, 'job_list.html', {'error': 'An unexpected error occurred.'})
+
+
+
 def recruiter_pending(request):
     if not request.user.is_authenticated:
-        return redirect('admin_login')
+        return redirect('recruiter_login')
     
     data = Recruiter.objects.filter(status = "pending")
     d = {'data': data}
@@ -66,7 +294,7 @@ def recruiter_pending(request):
 
 def recruiter_accepted(request):
     if not request.user.is_authenticated:
-        return redirect('admin_login')
+        return redirect('recruiter_login')
     
     data = Recruiter.objects.filter(status = "Active")
     d = {'data': data}
@@ -76,7 +304,7 @@ def recruiter_accepted(request):
 
 def recruiter_rejected(request):
     if not request.user.is_authenticated:
-        return redirect('admin_login')
+        return redirect('recruiter_login')
     
     data = Recruiter.objects.filter(status = "Reject")
     d = {'data': data}
@@ -85,19 +313,29 @@ def recruiter_rejected(request):
 
 def all_recruiter(request):
     if not request.user.is_authenticated:
-        return redirect('admin_login')
+        return redirect('recruiter_login')
     
     data = Recruiter.objects.all()
     d = {'data': data}
     print(d)
     return render(request, 'all_recruiter.html',d)
+
 def delete_user(request, pid):
     if not request.user.is_authenticated:
         return redirect('admin_login')
     
-    student = StudentUser.objects.get(id = pid )
+    student = User.objects.get(id = pid )
     student.delete()
     return redirect('views_user')
+
+
+def delete_recruiter(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    
+    recruiter = User.objects.get(id = pid)
+    recruiter.delete()
+    return redirect('all_recruiter')
 
 def admin_login(request):
     error = ""

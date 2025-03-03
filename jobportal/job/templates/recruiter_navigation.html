@@ -76,16 +76,26 @@
                 <a class="nav-link" href="{% url 'user_home' %}"><i class="fas fa-home mr-1"></i>Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}"><i class="fas fa-briefcase mr-1"></i>Job List</a>
+                <a class="nav-link" href="{% url 'add_job' %}"><i class="fas fa-plus-circle mr-1"></i>Add Job</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'change_passworduser' %}"><i class="fas fa-key mr-1"></i>Change Password</a>
+                <a class="nav-link" href="{% url 'job_list' %}"><i class="fas fa-briefcase mr-1"></i>Job List</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}"><i class="fas fa-users mr-1"></i>Candidate Applied</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'change_passwordrecruiter' %}"><i class="fas fa-key mr-1"></i>Change Password</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>Logout</a>
             </li>
 
         </ul>
+
+        <a class="navbar-brand text-white pl-5 font-weight-bold" style="font-family: 'Monotype Corsiva'; font-size: 25px" href="#"><i class="fas fa-user-alt"></i> {{request.user.first_name}} {{request.user.last_name}}</a>
+
     </div>
 </nav>
 
