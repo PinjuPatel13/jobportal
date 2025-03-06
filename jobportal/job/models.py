@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 
 class StudentUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, null=True, blank=True) 
+    first_name = models.CharField(max_length=100, null=True, blank=True) 
+    last_name = models.CharField(max_length=100, null=True, blank=True) 
     mobile = models.CharField(max_length=15, null=True, blank=True)
     image = models.FileField(null=True, blank=True)
     gender = models.CharField(max_length=10, null=True, blank=True)
@@ -16,7 +17,8 @@ class StudentUser(models.Model):
 
 class Recruiter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, null=True, blank=True) 
+    first_name = models.CharField(max_length=100, null=True, blank=True) 
+    last_name = models.CharField(max_length=100, null=True, blank=True) 
     company = models.CharField(max_length=100,null = True, blank=True)
     mobile = models.CharField(max_length=15, null=True, blank=True)
     image = models.FileField(null=True, blank=True)
@@ -41,7 +43,16 @@ class Job(models.Model):
     job_experience = models.CharField(max_length=100)
     Skills = models.CharField(max_length=100)
     Creationdata = models.DateField()
-    
-    
     def __str__(self):
         return self.job_title
+
+
+class Apply(models.Model):
+    job = models.ForeignKey(Job,on_delete=models.CASCADE)
+    student = models.ForeignKey(StudentUser,on_delete=models.CASCADE)
+    resume = models.FileField(null = True)
+    applydate = models.DateField()
+    
+    def __str__(self):
+        return self.id
+    

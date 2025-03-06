@@ -1,10 +1,128 @@
-{% load static %}
+<body>
 
-{% block body %}
+    {% include 'recruiter_navigation.html' %}
+    <style>
+        .image-preview {
+            width: 150px; /* Adjust the width as needed */
+            height: 150px; /* Adjust the height to keep it square */
+            object-fit: cover; /* Ensures the image fits nicely */
+            border-radius: 5px; /* Optional: rounded corners */
+            border: 2px solid #000; /* Optional: border */
+        }
+    </style>
+    
+    <marquee style="font-family: 'Monotype-Corsiva'; font-size: 40px; color: white; background-color: black; font-weight: bold; margin-top: 1%">
+        Recruiter Profile
+    </marquee>
 
-{% include 'recruiter_navigation.html' %}
+    <!-- Message block here -->
+  
+    
+        {% if messages %}
+            {% for message in messages %}
+                <div id="alertMessage" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    
+
+    <div class="container mt-5">
+        <form name="signup" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded" onsubmit="return checkpass()" style="background-color: #f2f2f2;">
+            {% csrf_token %}
+
+            <h3 class="text-center mb-4" style="font-family: 'Dancing Script', cursive; color: maroon;">Recruiter Profile</h3>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="username"><b>First Name</b></label>
+                    <input type="text" id="username" class="form-control" name="Uname" value="{{recruiter.first_name}}" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="last_name"><b>Last Name</b></label>
+                    <input type="text" id="last_name" class="form-control" name="LastName" value="{{recruiter.last_name}}" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="contact_number"><b>Contact Number</b></label>
+                    <input type="text" id="contact_number" class="form-control" name="ContactNumber" value="{{recruiter.mobile}}" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="Company"><b>Company</b></label>
+                    <input type="text" id="Company" class="form-control" name="Company" value="{{recruiter.company}}" required>
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                <label for="Email_ID"><b>Email ID</b></label>
+                <input type="email" id="Email_ID" class="form-control" name="Email_ID" value="{{recruiter.email}}" required>
+            </div>
+
+            <div class="form-row">
+
+            <div class="form-group col-md-6">
+                <label><b>Gender </b></label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="Gender" id="male" value="Male" 
+                        {% if recruiter.gender == "Male" %}checked{% endif %}>
+                    <label class="form-check-label" for="male">Male</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="Gender" id="female" value="Female" 
+                        {% if recruiter.gender == "Female" %}checked{% endif %}>
+                    <label class="form-check-label" for="female">Female</label>
+                </div>
+            </div>
 
 
-{% include 'footer.html' %}
-{%  endblock %}
+            <div class="form-group col-md-6">
+                {{recruiter.user.image}}
+                <label for="image"><b>Image</b></label>
+                <div class="image-container">
+                    <input type="file" id="image" class="form-control" name="Image" accept="image/*" onchange="previewImage(event)"><br>
+                    <img id="imagePreview" src="{{ recruiter.image.url }}" alt="Profile Image" class="image-preview img-fluid rounded-circle">
+
+
+                </div>
+            </div>
+        </div>
+       
+
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-dark btn-block" style="font-size: 18px; padding: 15px; transition: background-color 0.3s;" onmouseover="this.style.backgroundColor='#333'" onmouseout="this.style.backgroundColor='black'">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function checkpass() {
+            if (document.signup.Pwd && document.signup.Pwd.value !== document.signup.ConfirmPwd.value) {
+                alert('Password and Confirm Password do not match!');
+                document.signup.ConfirmPwd.focus();
+                return false;
+            }
+            return true;
+        }
+        
+            setTimeout(function() {
+                const alert = document.getElementById('alertMessage');
+                if (alert) {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500); 
+                }
+            }, 2000);
+        
+    </script>
+
+</body>
+{% include "footer.html" %}
+
 

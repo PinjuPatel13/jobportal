@@ -1,6 +1,8 @@
 {% load static %}
 
-{% include 'admin_navigation.html' %}
+{% block body %}
+
+{% include 'navigation.html' %}
 
 <hr>
 
@@ -54,46 +56,46 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-center bg-dark text-white">
-            <h4>ALL Recruiters</h4>
+            <h4>Latest Job</h4>
         </div>
         <div class="card-body">
+            {% if job %}
             <table class="table table-striped table-hover table-bordered table-responsive" id="example">
                 <thead>
                     <tr>
                         <th>Sr.No.</th>
-                        <th>Full Name</th>
-                        <th>Email ID</th>
-                        <th>Contact</th>
-                        <th>Gender</th>
-                        <th>Company</th>
-                        <th>Image</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        <th>Company Name</th>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in data %}
+                    {% for i in job %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ i.name }}</td>
-                        <td>{{ i.email }}</td>
-                        <td>{{ i.mobile }}</td>
-                        <td>{{ i.gender }}</td>
-                        <td>{{ i.company }}</td>
-                        <td><img src="{{ i.image.url }}" class="img-fluid rounded-circle" alt="User Image"></td>
-                        <td>{{ i.status }}</td>
-                        <td class = 'd-flex'>
-                            <a href="{% url 'change_status' i.id %}?name={{ i.name }}" class="btn btn-primary btn-sm" style = "display: inline-bloack">Change Status </a> 
-
-                            <a href = "{% url 'delete_recruiter' i.user.id %}"button class="btn btn-danger btn-sm" style = "display: inline-bloack" onclick = "return confirm('Are You Sure?..')">Delete</button>
+                        <td>{{ i.recruiter.company }}</td>
+                        <td>{{ i.job_title }}</td>
+                        <td>{{ i.job_location }}</td>
+                        <td>{{ i.start_data }}</td>
+                        <td>{{ i.End_data }}</td>
+                        <td>
+                            <a href="{% url 'user_login' %}" class="btn btn-success btn-sm">
+                               Apply Here
+                            </a>
                         </td>
-                       
-                        
-                    </tr>
+                    </tr>   
                     {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <p>No jobs available.</p>
+            {% endif %}
         </div>
     </div>
 </div>
 
+{% include 'footer.html' %}
+{% endblock %}

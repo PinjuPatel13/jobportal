@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from .models import StudentUser , Recruiter , Job
+from .models import StudentUser , Recruiter , Job,Apply
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
@@ -37,6 +37,26 @@ def views_user(request):
     d = {'data': data}
     return render(request, 'views_user.html',d)
 
+def latest_job(request):
+    job = Job.objects.all().order_by('-start_data')
+    d = {'job': job}
+    return render(request, 'latest_job.html',d)
+
+def user_latest_job(request):
+    job = Job.objects.all().order_by('-start_data')
+    user = request.user
+    student = StudentUser.objects.get(user = user)
+    data = Apply.objects.filter(student = student)
+    li=[]
+    for i in data:
+        li.append(i.job.id)
+    d = {'job': job,'li':li}
+    return render(request, 'user_latest_job.html',d)
+
+def job_details(request,pid):
+    job = Job.objects.get(id = pid)
+    d = {'job': job}
+    return render(request, 'job_details.html',d)
 
 
 def change_status(request, pid):
@@ -178,35 +198,67 @@ def add_job(request):
         sd = request.POST['startdate']
         ed = request.POST['enddate']
         sy = request.POST['Salary']
-        lgo = request.FILES.get('image')  # Use .get() to avoid KeyError
-        ex = request.POST['Expriance']  # Fix spelling in HTML form too
+        lgo = request.FILES.get('image') 
+        ex = request.POST['Expriance']  
         loc = request.POST['location']
         sk = request.POST['Skills']
         des = request.POST['Description']
 
         print("Form Data:", jt, sd, ed, sy, lgo, ex, loc, sk, des)
         user = request.user
-        recruiter = Recruiter.objects.get(user=user)
+        try:
+            recruiter = Recruiter.objects.get(user=user)
+        except Recruiter.DoesNotExist:
+            print(f"No recruiter found for user: {user}")
+            error = "Recruiter profile not found. Please complete your profile."
+            return render(request, 'add_job.html', {'error': error})
+
 
         try:
             Job.objects.create(
                 recruiter=recruiter,
-                start_date=sd,  # Fixed field name
-                End_data=ed,  # Fixed field name
+                start_data=sd,  
+                End_data=ed,  
                 job_title=jt,
                 job_salary=sy,
-                Image=lgo,  # Assuming 'image' is the field name in the model
+                Image=lgo,
                 job_description=des,
                 job_location=loc,
-                job_experience=ex,  # Check if field matches your model
-                Skills=sk,  # Assuming lowercase 'skills' is in the model
-                Creationdata=date.today()  # Fixed field name
+                job_experience=ex,  
+                Skills=sk,  
+                Creationdata=date.today()  
             )
             error = "No"
         except Exception as e:
             print(e)
             error = "Yes"
     return render(request, 'add_job.html', {'error': error})
+
+
+
+def change_logo(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')  
+
+    try:
+        job = Job.objects.get(id=pid)  
+    except ObjectDoesNotExist:
+       
+        return redirect('recruiter_login') 
+
+    error = ""
+    
+    if request.method == "POST":
+        if 'logo' in request.FILES:
+            cl = request.FILES['logo']
+            job.Image = cl  
+            job.save()  
+            error = "No"  
+        else:
+            error = "Yes"  
+
+    d = {'error': error, 'job': job}
+    return render(request, 'change_logo.html', d)
 
 
 
@@ -235,22 +287,19 @@ def edit_jobdetails(request, pid):
             job.job_experience = ex
             job.Skills = sk
 
-            # Only update image if a new one was uploaded
             if 'image' in request.FILES:
                 job.Image = request.FILES['image']
 
-            # Update start date if provided
             if sd:
                 job.start_data = sd
 
-            # Update end date if provided
             if ed:
                 job.End_data = ed
 
             job.save()
             error = "No"
         except Exception as e:
-            print(e)  # Useful for debugging
+            print(e)  
             error = "Yes"
 
     d = {'error': error, 'job': job}
@@ -386,7 +435,7 @@ def User_signup(request):
 
             user = User.objects.create_user(first_name=f, username=E, password=P, last_name=L)
             
-            StudentUser.objects.create(user=user, mobile=C, image=img, gender=G, Type= "student", name = f , email = E)
+            StudentUser.objects.create(user=user, mobile=C, image=img, gender=G, Type= "student", first_name = f , email = E, last_name = L)
 
             error = "no"  
             success_message = "Signup successful! You will be redirected to the login page shortly."
@@ -442,8 +491,42 @@ def user_login(request):
 
 @login_required(login_url='user_login')
 def user_home(request):
-    print(f"User authenticated: {request.user.is_authenticated}")
-    return render(request, 'user_home.html')
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+
+    try:
+        student = StudentUser.objects.get(user=request.user)
+
+        if request.method == "POST":
+            fn = request.POST['Uname']
+            ln = request.POST['LastName']
+            cont = request.POST['ContactNumber']
+            email = request.POST['Email_ID']
+            g = request.POST['Gender']
+            img = request.FILES.get('Image')
+
+            student.first_name = fn
+            student.last_name = ln
+            student.mobile = cont
+            student.email = email
+            student.gender = g
+
+            if img:
+                student.image = img
+
+            student.save()
+            messages.success(request, "Profile updated successfully!")  # Message is here
+            return redirect('user_home')
+
+    except Recruiter.DoesNotExist:
+        messages.error(request, "User not found.")
+        return redirect('user_login')
+
+    except Exception as e:
+        print(e)
+        messages.error(request, "An unexpected error occurred.")
+
+    return render(request, 'user_home.html', {'student': student})
 
 
 def recruiter_login(request):
@@ -508,7 +591,7 @@ def recruiter_signup(request):
             
             filename = get_random_string(length=32)
             default_storage.save(f'{filename}.jpg', ContentFile(img.read()))
-            Recruiter.objects.create(user=user, mobile=C, image=f'{filename}.jpg', gender=G, Type= "Recruiter", company= company , name = f , status = "pending" , email = E)
+            Recruiter.objects.create(user=user, mobile=C, image=f'{filename}.jpg', gender=G, Type= "Recruiter", company= company , first_name = f ,last_name = L, status = "pending" , email = E)
 
             error = "no"  
             success_message = "Signup successful! You will be redirected to the login page shortly."
@@ -526,9 +609,45 @@ def recruiter_signup(request):
     return render(request, 'recruiter_signup.html', {'error': error, 'success_message': success_message})
     
 
+
+
+
 def recruiter_home(request):
     if not request.user.is_authenticated:
         return redirect('recruiter_login')
-    return render(request, 'recruiter_home.html')
 
+    try:
+        recruiter = Recruiter.objects.get(user=request.user)
 
+        if request.method == "POST":
+            fn = request.POST['Uname']
+            ln = request.POST['LastName']
+            cont = request.POST['ContactNumber']
+            comp = request.POST['Company']
+            email = request.POST['Email_ID']
+            g = request.POST['Gender']
+            img = request.FILES.get('Image')
+
+            recruiter.first_name = fn
+            recruiter.last_name = ln
+            recruiter.mobile = cont
+            recruiter.company = comp
+            recruiter.email = email
+            recruiter.gender = g
+
+            if img:
+                recruiter.image = img
+
+            recruiter.save()
+            messages.success(request, "Profile updated successfully!")  # Message is here
+            return redirect('recruiter_home')
+
+    except Recruiter.DoesNotExist:
+        messages.error(request, "Recruiter not found.")
+        return redirect('recruiter_login')
+
+    except Exception as e:
+        print(e)
+        messages.error(request, "An unexpected error occurred.")
+
+    return render(request, 'recruiter_home.html', {'recruiter': recruiter})

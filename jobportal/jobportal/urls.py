@@ -36,7 +36,11 @@ urlpatterns = [
     path('delete_recruiter/<int:pid>',delete_recruiter, name="delete_recruiter"),
     path('add_job/',add_job, name="add_job"),
     path('job_list/',job_list, name="job_list"),
+    path('latest_job/',latest_job, name="latest_job"),
+    path('user_latest_job/',user_latest_job, name="user_latest_job"),
+    path('job_details/<int:pid>',job_details, name="job_details"),
     path('edit_jobdetails/<int:pid>',edit_jobdetails, name="edit_jobdetails"),
+    path('change_logo/<int:pid>',change_logo, name="change_logo"),
 
 
 

@@ -1,0 +1,89 @@
+{% load static %}
+
+{% block body %}
+
+{% include 'recruiter_navigation.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Company Logo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Monotype+Corsiva&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .btn-dark {
+            background-color: #000;
+            color: #fff;
+            font-size: 18px;
+            padding: 15px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .btn-dark:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Marquee Section -->
+    <marquee style="font-family: 'Monotype-Corsiva'; font-size: 40px; color: white; background-color: black; font-weight: bold; margin-top: 1%">
+       Change Company Logo
+    </marquee>
+
+    <div class="container mt-5">
+        <form name="signup" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded" onsubmit="return checkpass()" style="background-color: #f2f2f2;">
+            {% csrf_token %}
+
+            <h3 class="text-center mb-4" style="font-family: 'Dancing Script', cursive; color: maroon;">Change Company Logo</h3>
+
+            <div class="form-group">
+                <label><b>Job Title</b></label>
+                <input type="text" class="form-control" name="jobtitle" readonly value="{{ job.job_title }}">
+            </div>
+
+            <div class="form-row">
+                <!-- Image Preview -->
+                <div class="form-group col-md-12">
+                    <div class="col-md-6">
+                        <img src="{{ job.Image.url }}" width="120" height="90" alt="Company Logo">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><b>Logo</b></label>
+                <input type="file" id="logo" class="form-control" name="logo">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-dark" style="font-size: 18px;">
+                    Edit
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>
+
+{% include 'footer.html' %}
+
+{% if error == "No" %} 
+<script>
+    alert("Company Logo has been updated successfully");
+    window.location = ('{% url "change_logo" job.id %}');
+</script>
+{% elif error == "Yes" %} 
+<script>
+    alert("Something went wrong, try again...");
+</script>
+{% endif %}
+
+{% endblock %}
