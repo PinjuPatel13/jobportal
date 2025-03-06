@@ -4,6 +4,48 @@
 
 {% include 'admin_navigation.html' %}
 
+<style>
+    .mydiv {
+        background-color: transparent;  /* Ensure the default background is transparent */
+    }
+
+    .mydiv:hover {
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.9);
+        transform: translateY(-20px);
+        padding: 5px;
+        background-color: transparent;  /* Prevent any background color change */
+    }
+
+    .container {
+        background-color: transparent;  /* Ensures no unwanted background color */
+    }
+
+    footer {
+        background-color: #f8f9fa;  /* Light background color for footer */
+        padding: 20px;
+    }
+</style>
+
+<marquee style="font-family: 'Monotype-Corsiva'; font-size: 40px; color: white; background-color: black; font-weight: bold; margin-top: 1%">
+    Admin Home Page
+</marquee>
+
+<hr>
+
+<div class="container mt-5" style="background-color: transparent; color: black">
+    <br><br>
+    <div class="row mt-5">
+        <div class="col-md-6 mydiv">
+            <h4 class='text-center'><i class='fa fa-user mr-2'></i>Total Users</h4>
+            <p class='text-center'>{{stcount}}</p>
+        </div>
+
+        <div class="col-md-6 mydiv">
+            <h4 class='text-center'><i class='fa fa-user mr-2'></i>Total Recruiters</h4>
+            <p class='text-center'>{{recount}}</p>
+        </div>
+    </div>
+</div>      
 
 {% include 'footer.html' %}
-{%  endblock %}
+{% endblock %}

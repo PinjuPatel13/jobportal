@@ -52,7 +52,8 @@ class Apply(models.Model):
     student = models.ForeignKey(StudentUser,on_delete=models.CASCADE)
     resume = models.FileField(null = True)
     applydate = models.DateField()
+    recruiter = models.ForeignKey(Recruiter, on_delete=models.CASCADE, default=1)
     
     def __str__(self):
-        return self.id
-    
+        return f"Application by {self.student} for {self.job.job_title} on {self.applydate}"
+

@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row">
             <!-- Contact Information Section -->
-            <div class="col-md-4 mt-3">
+            <div class="col-md-4 mt-3 mydiv">
                 <h3 style="color: white;">Contact Information</h3>
                 <p style="color: yellow; font-size:18px;">
                     <i class="fa fa-map-marker text-danger"></i> Rue Gregoire Soupart 14, 6200, Chatelet
@@ -23,7 +23,7 @@
             </div>
 
             <!-- Online Placement Section -->
-            <div class="col-md-4 mt-3">
+            <div class="col-md-4 mt-3 mydiv">
                 <h3 class="text-white">Online Placement</h3>
                 <p style="color: yellow; font-size:18px;">
                     Online Placement has transformed the recruitment process by connecting job seekers with employers through digital platforms. It offers a convenient and efficient way for candidates to apply for jobs and attend interviews from anywhere, expanding opportunities across industries.
@@ -31,15 +31,15 @@
             </div>
 
             <!-- Newsletter Section -->
-            <div class="col-md-4 mt-3">
+            <div class="col-md-4 mt-3 mydiv">
                 <h3 class="text-white">Newsletter</h3>
                 <p style="color: yellow; font-size:18px;">
                     If you want any other information, send us your email ID to receive updates.
                 </p>
                 <form method="POST" class="form-inline">
                     {% csrf_token %}
-                    <input type="email" name="emailid" placeholder="Enter Your Email ID" required class="form-control mr-2" style="width: 80%; margin-bottom: 10px;">
-                    <input type="submit" value="Send" class="btn btn-primary interactive-btn" style="width: 100%;">
+                    <input type="email" name="emailid" placeholder="Enter Your Email ID" required class="form-control mr-2" style="width: 100%; margin-bottom: 10px;">
+                    <input type="submit" value="Send" class="btn btn-primary interactive-btn" style="width: 100%; margin-top: 10px;">
                 </form>
             </div>
         </div>
@@ -48,6 +48,39 @@
 
 <!-- Interactive Footer Styles -->
 <style>
+    /* Prevent background color inheritance on hover */
+    .mydiv {
+        background-color: transparent;  /* Ensures no background color change on hover */
+    }
+
+    .mydiv:hover {
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.9);
+        transform: translateY(-20px);
+        padding: 5px;
+        background-color: transparent;  /* Prevents hover from changing the background color */
+    }
+
+    /* Footer background */
+    footer {
+        background-color: #f8f9fa;  /* Light background color for footer */
+        padding: 20px;
+        margin-top: 20px;  /* Adds space between footer and content */
+        position: relative;
+    }
+
+    /* Prevent footer's background from affecting other elements */
+    footer * {
+        background-color: transparent !important;  /* Prevents footer's background from affecting other elements */
+    }
+
+    /* Additional hover effects for the sections */
+    .row div:hover {
+        background-color: #222;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    /* Button Hover Effects */
     .interactive-btn {
         transition: background-color 0.3s, transform 0.2s;
         border: none;
@@ -58,32 +91,5 @@
     .interactive-btn:hover {
         background-color: #28a745;
         transform: scale(1.05);
-    }
-
-    .fa {
-        transition: color 0.3s;
-    }
-
-    .fa:hover {
-        color: #f0ad4e;
-    }
-
-    .col-md-4 p {
-        transition: color 0.3s;
-    }
-
-    .col-md-4 p:hover {
-        color: #f0ad4e;
-    }
-
-    .container {
-        padding: 0 50px;
-    }
-
-    /* Add custom hover effects for the sections */
-    .row div:hover {
-        background-color: #222;
-        padding: 20px;
-        transition: background-color 0.3s;
     }
 </style>

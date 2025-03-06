@@ -1,0 +1,51 @@
+{% load static %}
+
+{% block body %}
+
+{% include 'navigation.html' %}
+
+<style>
+    .mydiv:hover{
+        box-shadow: 0 0 20px 0  rgba(0,0,0,0.9);
+        transform:translateY(-20px);
+        padding:5px;
+
+    }
+</style>
+<marquee style="font-family: 'Monotype-Corsiva'; font-size: 40px; color: white; background-color: black; font-weight: bold; margin-top: 1%">
+    Contact US
+</marquee>
+
+<hr>
+
+<div class="container mt-5" style="background-color: transparent; color: black">
+    <br><br>
+    <div class="row mt-5" >
+        <div class="col-md-3 mydiv">
+            <h4 class='text-center'><i class='fas fa-phone-square mr-2'></i>Contact</h4>
+            <p class='text-center'>+91 95688-87778</p>
+        </div>
+
+        <div class="col-md-3 mydiv">
+            <h4 class='text-center'><i class='fas fa-envelope mr-2'></i>Email ID</h4>
+            <p class='text-center'>info@gmail.com</p>
+        </div>
+
+        <div class="col-md-3 mydiv">
+            <h4 class='text-center'><i class='fas fa-map-marker-alt mr-2'></i>Address</h4>
+            <p class='text-center'>ABC-XYZ</p>
+        </div>
+
+        <div class="col-md-3 mydiv">
+            <h4 class='text-center'><i class='fas fa-clock mr-2'></i>Office Timing</h4>
+            <p class='text-center'>ABC-XYZ</p>
+        </div>
+    </div>
+
+    
+</div>      
+
+
+  
+
+{% endblock %}

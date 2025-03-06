@@ -314,18 +314,15 @@ def job_list(request):
         user = request.user
         recruiter = Recruiter.objects.get(user=user)
         
-        # Fetch jobs related to the recruiter with optimized query
         job = Job.objects.filter(recruiter=recruiter).select_related('recruiter')
         
         context = {'job': job}
         return render(request, 'job_list.html', context)
 
     except ObjectDoesNotExist:
-        # Handle the case when a recruiter is not found for the user
-        return redirect('recruiter_login')  # or a custom error page
+        return redirect('recruiter_login') 
     
     except Exception as e:
-        # Log the error and show a generic error message
         print(f"Error: {e}")
         return render(request, 'job_list.html', {'error': 'An unexpected error occurred.'})
 
@@ -411,7 +408,14 @@ def admin_login(request):
     return render(request, 'admin_login.html', {'error': error})
 
 def admin_home(request):
-   return render(request, 'admin_home.html')
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    
+    
+    stcount = StudentUser.objects.all().count()
+    recount = Recruiter.objects.all().count()
+    da = {'stcount':stcount,'recount': recount}
+    return render(request, 'admin_home.html',da)
 
 def User_signup(request):
     error = ""
@@ -609,9 +613,6 @@ def recruiter_signup(request):
     return render(request, 'recruiter_signup.html', {'error': error, 'success_message': success_message})
     
 
-
-
-
 def recruiter_home(request):
     if not request.user.is_authenticated:
         return redirect('recruiter_login')
@@ -651,3 +652,62 @@ def recruiter_home(request):
         messages.error(request, "An unexpected error occurred.")
 
     return render(request, 'recruiter_home.html', {'recruiter': recruiter})
+
+from django.shortcuts import redirect, render
+from django.contrib import messages
+from .models import StudentUser, Job, Apply
+from datetime import date
+
+def applyforjob(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+    
+    user = request.user
+    student = StudentUser.objects.get(user=user)
+    job = Job.objects.get(id=pid)
+    today = date.today() 
+    
+    if job.End_data < today:
+        messages.error(request, "Job has expired")
+    elif job.start_data > today:
+        messages.error(request, "Job has not started yet")
+    else:
+        if request.method == "POST":
+            if 'resume' in request.FILES: 
+                resm = request.FILES['resume']
+                Apply.objects.create(resume=resm, applydate=today, student=student, job=job , recruiter=job.recruiter)
+                messages.success(request, "Application submitted successfully!")
+            else:
+                messages.error(request, "Please upload a resume.")
+    
+    return render(request, 'applyforjob.html')
+
+
+def applied_candidate_list(request):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')  
+
+    try:
+        user = request.user
+        recruiter = Recruiter.objects.get(user=user)
+        
+        jobs = Job.objects.filter(recruiter=recruiter)
+        
+        applications = Apply.objects.filter(job__in=jobs).select_related('job', 'student')
+
+        context = {'applications': applications}
+        return render(request, 'applied_candidate_list.html', context)
+
+    except ObjectDoesNotExist:
+        messages.error(request, "No data found")
+        return redirect('recruiter_home')
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        messages.error(request, "An unexpected error occurred")
+        return redirect('recruiter_home')
+
+
+def contact(request):
+
+    return render(request, 'contact.html')
