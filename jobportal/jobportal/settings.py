@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
+import django
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,10 +32,20 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver','jobportal-1-6xt8.onrender.com']
 
 
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
     'job',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,9 +98,11 @@ DATABASES = {
         'USER': 'database_iuh2_user',
         'PASSWORD': 'd708fq7TJXDfzHQif5V24Ke1knMTMOsV',  
         'HOST': 'dpg-cv4p92an91rc73e4e000-a',  
+        'HOST': 'dpg-cv4p92an91rc73e4e000-a.oregon-postgres.render.com',  
         'PORT': '5432',  
     }
 }
+
 
 
 # Password validation
