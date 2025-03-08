@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'jobportal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'database_iuh2',
+        'USER': 'database_iuh2_user',
+        'PASSWORD': 'd708fq7TJXDfzHQif5V24Ke1knMTMOsV',  
+        'HOST': 'dpg-cv4p92an91rc73e4e000-a',  
+        'PORT': '5432',  
     }
 }
 
